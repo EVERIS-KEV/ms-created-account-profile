@@ -1,14 +1,12 @@
 package com.everis.createdaccountprofile.map;
 
-import lombok.*;
-import org.springframework.data.annotation.Id;
+import lombok.*; 
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class customer {
-  @Id
+public class customer { 
   private String idclient;
 
   private String dni;
