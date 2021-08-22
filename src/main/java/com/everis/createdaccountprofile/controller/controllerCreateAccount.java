@@ -1,49 +1,62 @@
 package com.everis.createdaccountprofile.controller;
 
-import com.everis.createdaccountprofile.dto.*;
-import com.everis.createdaccountprofile.service.serviceCreateAccount;
-
 import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.everis.createdaccountprofile.dto.fromAccount;
+import com.everis.createdaccountprofile.dto.message;
+import com.everis.createdaccountprofile.dto.transfer;
+import com.everis.createdaccountprofile.service.serviceCreateAccount;
+
 import reactor.core.publisher.Mono;
 
 @RestController
-@CrossOrigin(
-  origins = "*",
-  methods = {
-    RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE
-  }
-)
+@CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT,
+		RequestMethod.DELETE })
 @RequestMapping
 public class controllerCreateAccount {
-  @Autowired
-  serviceCreateAccount service;
+	@Autowired
+	serviceCreateAccount service;
 
-  @GetMapping("/")
-  public Mono<String> get() {
-    return Mono.just("");
-  }
+	@GetMapping("/")
+	public Mono<String> get() {
+		return Mono.just("HEY");
+	}
 
-  @PostMapping("/save")
-  public Mono<Object> create(@RequestBody fromAccount model) {
-    return service.saveAccount(model);
-  }
+	@PostMapping("/save")
+	public Mono<Object> create(@RequestBody @Valid fromAccount model, BindingResult bindinResult) {
+		String msg = "";
 
-  @PostMapping("/transferAccount")
-  public Mono<Object> transferAccount(
-    @RequestBody @Valid transfer model,
-    BindingResult bindinResult
-  ) {
-    String msg = "";
+		if (bindinResult.hasErrors()) {
+			for (int i = 0; i < bindinResult.getAllErrors().size(); i++) {
+				msg = bindinResult.getAllErrors().get(0).getDefaultMessage();
+			}
+			return Mono.just(new message(msg));
+		}
 
-    if (bindinResult.hasErrors()) {
-      for (int i = 0; i < bindinResult.getAllErrors().size(); i++) msg =
-        bindinResult.getAllErrors().get(0).getDefaultMessage();
-      return Mono.just(new message(msg));
-    }
+		return service.saveAccount(model);
+	}
 
-    return service.transferAccount(model);
-  }
+	@PostMapping("/transferAccount")
+	public Mono<Object> transferAccount(@RequestBody @Valid transfer model, BindingResult bindinResult) {
+		String msg = "";
+
+		if (bindinResult.hasErrors()) {
+			for (int i = 0; i < bindinResult.getAllErrors().size(); i++) {
+				msg = bindinResult.getAllErrors().get(0).getDefaultMessage();
+			}
+			return Mono.just(new message(msg));
+		}
+
+		return service.transferAccount(model);
+	}
 }

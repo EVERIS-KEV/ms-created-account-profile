@@ -1,19 +1,21 @@
 package com.everis.createdaccountprofile.dto;
 
-import com.everis.createdaccountprofile.consumer.webClient;
-import com.everis.createdaccountprofile.map.customer;
+import javax.validation.constraints.NotBlank;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Setter
 @NoArgsConstructor
 public class fromAccount {
-  private String perfil;
-  private String idCustomer;
+	private String perfil;
+	@NotBlank(message = "Debe seleccionar un cliente.")
+	private String idCustomer;
 
-  public fromAccount(String idCustomer) {
-    this.idCustomer = idCustomer; 
-  }
-  
+	public fromAccount(String idCustomer) {
+		this.idCustomer = idCustomer; 
+	}
+
 }
