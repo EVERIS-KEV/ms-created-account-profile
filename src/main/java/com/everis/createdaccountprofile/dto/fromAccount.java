@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class fromAccount {
-	private String perfil;
+	private String profile;
 	@NotBlank(message = "Debe seleccionar un cliente.")
 	private String idCustomer;
 
