@@ -2,6 +2,7 @@ package com.everis.createdaccountprofile.service;
 
 import org.springframework.stereotype.Service;
 
+import com.everis.createdaccountprofile.Constants.Constants;
 import com.everis.createdaccountprofile.consumer.webClient;
 import com.everis.createdaccountprofile.dto.fromAccount;
 import com.everis.createdaccountprofile.dto.message;
@@ -51,13 +52,6 @@ public class serviceCreateAccount {
 				.bodyToMono(Object.class);
 	}
 
-	private Boolean verifyCE(String number) {
-		if (verifyNumberCC(number) || verifyNumberSC(number) || verifyNumberFC(number)) {
-			return true;
-		}
-		return false;
-	}
-
 	private Boolean verifyCR(String number) {
 		if (verifyNumberCC(number) || verifyNumberSC(number) || verifyNumberFC(number)) {
 			return true;
@@ -78,17 +72,17 @@ public class serviceCreateAccount {
 			return Mono.just(webClient.fixedAccount.post().uri("/movememts").body(Mono.just(model), transfer.class)
 					.retrieve().bodyToMono(Object.class).block());
 		} else {
-			return Mono.just(new message("Numero emisor incorrecto."));
+			return Mono.just(new message(Constants.Messages.YOUR_ACCOUNT_NOFOUND));
 		}
 	}
 
 	public Mono<Object> transferAccount(transfer model) {
-		if (!verifyCR(model.getAccountRecep())) {
-			return Mono.just(new message("Las cuenta receptora no existe."));
+		if (!verifyCR(model.getAccountRecep())) { 
+			return Mono.just(new message(Constants.Messages.INCORRECT_DATA));
 		}
 
-		if (model.getAccountEmisor().equals(model.getAccountRecep())) {
-			return Mono.just(new message("Las cuentas no pueden ser iguales."));
+		if (model.getAccountEmisor().equals(model.getAccountRecep())) { 
+			return Mono.just(new message(Constants.Messages.REPETED_DATA));
 		}
 
 		return addTransfer(model.getAccountEmisor(), model);
@@ -108,11 +102,11 @@ public class serviceCreateAccount {
 					model.setProfile("PYME");
 					return createProfileP(model);
 				}
-			} else {
-				msg = "Necesita adquirir un credito en este banco.";
+			} else { 
+				msg = Constants.Messages.NEED_CREDIT;
 			}
 		} else {
-			msg = "Cliente no econtrado.";
+			msg = Constants.Messages.CLIENT_NOT_REGISTERED;
 		}
 
 		return Mono.just(new message(msg));

@@ -27,35 +27,30 @@ public class controllerCreateAccount {
 	@Autowired
 	serviceCreateAccount service;
 
+	private Mono<Object> BindingResultErrors(BindingResult bindinResult){
+		String msg = "";
+
+		for (int i = 0; i < bindinResult.getAllErrors().size(); i++) {
+			msg = bindinResult.getAllErrors().get(0).getDefaultMessage();
+		} 
+		return Mono.just(new message(msg));
+	}
+
 	@GetMapping("/")
 	public Mono<String> get() {
-		return Mono.just("HEY");
+		return Mono.just("");
 	}
 
 	@PostMapping("/save")
 	public Mono<Object> create(@RequestBody @Valid fromAccount model, BindingResult bindinResult) {
-		String msg = "";
-
-		if (bindinResult.hasErrors()) {
-			for (int i = 0; i < bindinResult.getAllErrors().size(); i++) {
-				msg = bindinResult.getAllErrors().get(0).getDefaultMessage();
-			}
-			return Mono.just(new message(msg));
-		}
+		if (bindinResult.hasErrors()) return BindingResultErrors(bindinResult);
 
 		return service.saveAccount(model);
 	}
 
 	@PostMapping("/transferAccount")
 	public Mono<Object> transferAccount(@RequestBody @Valid transfer model, BindingResult bindinResult) {
-		String msg = "";
-
-		if (bindinResult.hasErrors()) {
-			for (int i = 0; i < bindinResult.getAllErrors().size(); i++) {
-				msg = bindinResult.getAllErrors().get(0).getDefaultMessage();
-			}
-			return Mono.just(new message(msg));
-		}
+		if (bindinResult.hasErrors()) return BindingResultErrors(bindinResult);
 
 		return service.transferAccount(model);
 	}
